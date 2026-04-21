@@ -42,6 +42,9 @@ gem "thruster", require: false
 # faraday for API call
 gem "faraday"
 
+# JWT for API authentication
+gem "jwt"
+
 
 #------------- assset pipeline -----------------
 # Gems used only for assets and not required
@@ -98,6 +101,9 @@ gem "whenever", require: false
 # fix some ???? bugs???
 gem "concurrent-ruby", "1.3.4"
 
+# silence rswag-ui ostruct warning (will be required from Ruby 3.5)
+gem "ostruct"
+
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -128,4 +134,15 @@ group :test do
   # Adds support for Capybara system testing and selenium driver
   gem "capybara"
   gem "selenium-webdriver"
+  gem "minitest-reporters"
+end
+
+# Swagger UI for API docs (served at /api-docs in all environments)
+gem "rswag-api"
+gem "rswag-ui"
+
+group :development, :test do
+  # RSpec + rswag for API spec testing & swagger generation
+  gem "rspec-rails"
+  gem "rswag-specs"
 end

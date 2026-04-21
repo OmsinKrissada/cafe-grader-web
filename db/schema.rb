@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_22_021758) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_10_165652) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -159,7 +159,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_22_021758) do
     t.integer "result"
     t.integer "time"
     t.integer "memory"
-    t.decimal "score", precision: 8, scale: 6
+    t.decimal "score", precision: 16, scale: 6
     t.string "result_text"
     t.string "isolate_message"
     t.text "output"
@@ -268,6 +268,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_22_021758) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
+  create_table "problem_stats", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "problem_id", null: false
+    t.integer "sub_count", default: 0, null: false
+    t.integer "solved_count", default: 0, null: false
+    t.integer "attempted_count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["problem_id"], name: "index_problem_stats_on_problem_id", unique: true
+  end
+
   create_table "problems", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", limit: 30
     t.string "full_name"
@@ -290,6 +300,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_22_021758) do
     t.string "permitted_lang"
     t.text "log", size: :medium
     t.boolean "allow_hint", default: true
+    t.boolean "view_submission", default: true
     t.index ["live_dataset_id"], name: "index_problems_on_live_dataset_id"
   end
 
@@ -326,7 +337,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_22_021758) do
   create_table "score_submissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "dataset_id", null: false
     t.bigint "submission_id", null: false
-    t.decimal "points", precision: 8, scale: 4
+    t.decimal "points", precision: 16, scale: 6
     t.integer "status", limit: 1, default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -337,7 +348,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_22_021758) do
   create_table "score_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "dataset_id", null: false
     t.bigint "user_id", null: false
-    t.decimal "points", precision: 8, scale: 4
+    t.decimal "points", precision: 16, scale: 6
     t.integer "status", limit: 1, default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -380,7 +391,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_22_021758) do
     t.datetime "compiled_at", precision: nil
     t.text "compiler_message", size: :medium
     t.datetime "graded_at", precision: nil
-    t.decimal "points", precision: 8, scale: 4
+    t.decimal "points", precision: 16, scale: 6
     t.text "grader_comment", size: :medium
     t.integer "number"
     t.string "source_filename"
@@ -506,6 +517,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_22_021758) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "problem_stats", "problems"
   add_foreign_key "problems_tags", "problems"
   add_foreign_key "problems_tags", "tags"
 end
