@@ -18,12 +18,15 @@ export default class extends Controller {
 
 
   initializeTooltips() {
-    const tooltipTriggerList = this.element.querySelectorAll('[data-bs-toggle="tooltip"]');
+    // Standard tooltip triggers, PLUS any element with data-bs-title that uses
+    // data-bs-toggle for some other purpose (offcanvas, dropdown, modal, …) —
+    // since data-bs-toggle holds a single value, those elements can't say
+    // `="tooltip"` but still want a tooltip on hover.
+    const standard = this.element.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const piggybacked = this.element.querySelectorAll('[data-bs-title][data-bs-toggle]:not([data-bs-toggle="tooltip"])');
+    const all = [...standard, ...piggybacked];
 
-    // Create new tooltip instances for the current content
-    this.tooltipInstances = Array.from(tooltipTriggerList).map(tooltipTriggerEl => {
-      return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
+    this.tooltipInstances = all.map(el => new bootstrap.Tooltip(el));
   }
 
   initializePopovers() {
@@ -39,6 +42,17 @@ export default class extends Controller {
     $(".select2").select2({
       theme: "bootstrap-5",
     });
+    // Bridge select2's jQuery-triggered `select2:select` event to a native
+    // `change` event. select2 v4 dispatches its events through jQuery, which
+    // does NOT always reach native addEventListener handlers — and Stimulus'
+    // `data-action="change->..."` uses native listeners. Without this bridge,
+    // a select2-styled dropdown's selection silently fails to trigger
+    // Stimulus actions. Namespaced .cafe_bridge so re-init doesn't stack
+    // duplicate handlers.
+    $(".select2").off("select2:select.cafe_bridge")
+                 .on("select2:select.cafe_bridge", (event) => {
+                   event.target.dispatchEvent(new Event("change", { bubbles: true }));
+                 });
   }
 
   initializeTempusDominus() {

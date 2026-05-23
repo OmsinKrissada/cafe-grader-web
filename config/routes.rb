@@ -38,9 +38,8 @@ Rails.application.routes.draw do
     post :index_query, on: :collection
   end
 
-  resources :tags do
+  resources :tags, except: [:show] do
     post :toggle_public, on: :member
-    post :toggle_primary, on: :member
     post :index_query, on: :collection
   end
 
@@ -87,7 +86,6 @@ Rails.application.routes.draw do
   end
 
   resources :sites
-  resources :test
 
   resources :audit_logs, only: [:index, :show]
 
@@ -135,7 +133,7 @@ Rails.application.routes.draw do
       get 'import'
       get 'manage'
       post 'manage_query'
-      get 'quick_create'
+      post 'quick_create'
       post 'manage', action: 'do_manage'
       post 'do_import'
     end
@@ -229,9 +227,11 @@ Rails.application.routes.draw do
       match 'bulk_manage', via: [:get, :post]
       get 'bulk_mail'
       get 'import'
+      post 'do_import'
       get 'new_list'
       get 'admin'
       post 'admin_query'
+      post 'ta_query'
       get 'active'
       get 'mass_mailing'
       match 'modify_role', via: [:get, :post]
@@ -251,13 +251,14 @@ Rails.application.routes.draw do
     member do
       get 'download'
       post 'compiler_msg'
-      get 'rejudge'
+      post 'rejudge'
       get 'set_tag'
       post 'evaluations'
       # viva exam
       get 'viva', to: 'viva_sessions#show', as: 'viva'
       post 'viva/turns', to: 'viva_sessions#answer', as: 'viva_answer'
       get 'viva/refresh', to: 'viva_sessions#refresh', as: 'viva_refresh'
+      post 'archive_viva'
     end
     collection do
       get 'prob/:problem_id', to: 'submissions#index', as: 'problem'

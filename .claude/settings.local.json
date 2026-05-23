@@ -39,7 +39,8 @@
       "Bash(awk '/create_table \"testcases\"/,/^  end/' /home/dae/cafe-grader/web/db/schema.rb)",
       "Bash(awk '/create_table \"users\"/,/^  end/' /home/dae/cafe-grader/web/db/schema.rb)",
       "Bash(awk '/create_table \"contests_problems\"/,/^  end/' /home/dae/cafe-grader/web/db/schema.rb)",
-      "Bash(awk '/create_table \"contests_users\"/,/^  end/' /home/dae/cafe-grader/web/db/schema.rb)"
+      "Bash(awk '/create_table \"contests_users\"/,/^  end/' /home/dae/cafe-grader/web/db/schema.rb)",
+      "Bash(bin/rails db:migrate:status)"
     ]
   }
 }
